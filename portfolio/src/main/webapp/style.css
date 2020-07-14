@@ -26,6 +26,12 @@
   width: 640px;
 }
 
+#comments {
+  margin-left: auto;
+  margin-right: auto;
+  width: 640px;
+}
+
 .image-thumbnails {
   display: flex;
   flex-wrap: wrap;
