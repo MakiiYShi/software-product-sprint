@@ -39,15 +39,12 @@ function getData() {
   fetch('/data').then(response => response.json()).then((dataList) => {
     // dataList is an object, not a string, so we have to
     // reference its fields to create HTML content
-    console.log("#### Get datalist, started by: " + dataList[0] + " ####");
     const dataListElement = document.getElementById('data-container');
     dataListElement.innerHTML = "";
-    dataListElement.appendChild(
-        createListElement("Data 0: " + dataList[0]));
-    dataListElement.appendChild(
-        createListElement("Data 1: " + dataList[1]));
-    dataListElement.appendChild(
-        createListElement("Data 2: " + dataList[2]));
+    for (var i = 0; i < dataList.length; i++) {
+        dataListElement.appendChild(
+            createListElement(dataList[i]));
+    }
   });
 }
 
