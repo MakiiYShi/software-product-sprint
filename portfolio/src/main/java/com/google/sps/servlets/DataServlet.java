@@ -15,6 +15,9 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -47,7 +50,17 @@ public class DataServlet extends HttpServlet {
     if (upperCase) {
       text = text.toUpperCase();
     }
+
+    // Add to the ArrayList.
     data.add(text);
+
+    // Add to the datastore.
+    Entity dataEntity = new Entity("Data");
+    dataEntity.setProperty("comment", text);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(dataEntity);
+
+    // Redirect to the portfolio page.
     response.sendRedirect("/index.html");
   }
 
