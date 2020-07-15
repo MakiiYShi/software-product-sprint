@@ -18,6 +18,9 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -28,16 +31,20 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private ArrayList<String> data;
-
-  @Override
-  public void init() {
-      data = new ArrayList<String>();
-  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    // Load data from datastore.
+    Query query = new Query("Data");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    ArrayList<String> data = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      String comment = (String) entity.getProperty("comment");
+      data.add(comment);
+    }
+    // Recode in json and respond.
+    response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(data));
   }
 
@@ -50,16 +57,11 @@ public class DataServlet extends HttpServlet {
     if (upperCase) {
       text = text.toUpperCase();
     }
-
-    // Add to the ArrayList.
-    data.add(text);
-
     // Add to the datastore.
     Entity dataEntity = new Entity("Data");
     dataEntity.setProperty("comment", text);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(dataEntity);
-
     // Redirect to the portfolio page.
     response.sendRedirect("/index.html");
   }
