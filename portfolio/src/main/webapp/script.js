@@ -32,8 +32,28 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
-async function getDataUsingAsyncAwait() {
-  const response = await fetch('/data');
-  const quote = await response.text();
-  document.getElementById('data-container').innerText = quote;
+/**
+ * Fetches data from the '/data' url and adds them to the DOM.
+ */
+function getData() {
+  fetch('/data').then(response => response.json()).then((dataList) => {
+    // dataList is an object, not a string, so we have to
+    // reference its fields to create HTML content
+    console.log("#### Get datalist, started by: " + dataList[0] + " ####");
+    const dataListElement = document.getElementById('data-container');
+    dataListElement.innerHTML = "";
+    dataListElement.appendChild(
+        createListElement("Data 0: " + dataList[0]));
+    dataListElement.appendChild(
+        createListElement("Data 1: " + dataList[1]));
+    dataListElement.appendChild(
+        createListElement("Data 2: " + dataList[2]));
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }

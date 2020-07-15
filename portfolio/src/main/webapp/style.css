@@ -32,6 +32,10 @@
   width: 640px;
 }
 
+#data-container {
+  margin-top: 20px;
+}
+
 .image-thumbnails {
   display: flex;
   flex-wrap: wrap;
